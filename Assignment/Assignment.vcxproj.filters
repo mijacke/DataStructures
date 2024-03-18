@@ -21,6 +21,9 @@
     <ClCompile Include="BusStop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BusStopManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="wkt_busstops.csv">
@@ -50,6 +53,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusStop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BusStopManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
