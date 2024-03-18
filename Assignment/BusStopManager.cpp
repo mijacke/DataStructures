@@ -17,7 +17,7 @@ void BusStopManager::loadFromCSV(const std::string& filename)
 	std::getline(file, line); // skip header line
 	int lineCounter = 1;
 
-	std::cout << std::string(210, '-') << std::endl;
+
 	std::cout << std::setw(4) << std::left << "Line" << "|"
 		<< std::setw(10) << std::left << "StopID" << "|"
 		<< std::setw(50) << std::left << "StopName" << "|"
@@ -32,7 +32,6 @@ void BusStopManager::loadFromCSV(const std::string& filename)
 
 	while (std::getline(file, line))
 	{
-		//stopid; stopname; stopsite; latitude; longitude; syscode; system; municipality
 		std::stringstream s(line);
 		std::string field;
 		std::vector<std::string> fields;
@@ -55,7 +54,6 @@ void BusStopManager::loadFromCSV(const std::string& filename)
 
 			busStops.emplace_back(stopid, stopname, stopsite, latitude, longitude, syscode, system, municipality);
 
-			// Inside your loadFromCSV function, when you print each line:
 			std::cout << std::setw(4) << std::left << lineCounter << "|"
 				<< std::setw(10) << std::left << stopid << "|"
 				<< std::setw(50) << std::left << stopname << "|"
