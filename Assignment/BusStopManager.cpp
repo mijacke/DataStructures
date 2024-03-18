@@ -20,28 +20,35 @@ void BusStopManager::loadFromCSV(const std::string& filename)
 	{
 		//stopid; stopname; stopsite; latitude; longitude; syscode; system; municipality
 		std::stringstream s(line);
-		std::string cell; // skiped header line
+		std::string field;
+		std::vector<std::string> fields;
 
-		std::string stopid, stopname, stopsite, syscode, system, municipality;
-		double latitude, longitude;
+		// Read each field from the line into the fields vector
+		while (std::getline(s, field, ';')) {
+			fields.push_back(field);
+		}
 
-		std::getline(s, cell, ';'); // skiped header line
-		std::getline(s, stopid, ';');
-		std::getline(s, stopname, ';');
-		std::getline(s, stopsite, ';');
-		s >> latitude; s.ignore(); // s.ignore() to skip the separator
-		s >> longitude; s.ignore(); // s.ignore() to skip the separator
-		std::getline(s, syscode, ';');
-		std::getline(s, system, ';');
-		std::getline(s, municipality, ';');
 
-		std::cout << lineCounter << ". " << stopid << "; " << stopname << "; " << stopsite << "; "
-			<< latitude << "; " << longitude << "; " << syscode << "; "
-			<< system << "; " << municipality << std::endl;
+		if (fields.size() == 8) {
+			std::string stopid = fields[0];
+			std::string stopname = fields[1];
+			std::string stopsite = fields[2];
+			double latitude = std::stod(fields[3]);
+			double longitude = std::stod(fields[4]);
+			std::string syscode = fields[5];
+			std::string system = fields[6];
+			std::string municipality = fields[7];
 
+			busStops.emplace_back(stopid, stopname, stopsite, latitude, longitude, syscode, system, municipality);
+
+			std::cout << lineCounter << ". " << stopid << "; " << stopname << "; " << stopsite << "; "
+				<< latitude << "; " << longitude << "; " << syscode << "; "
+				<< system << "; " << municipality << std::endl;
+		}
+		else {
+			std::cerr << "Error: Line " << lineCounter << " does not have 8 fields as expected." << std::endl;
+		}
 		lineCounter++;
-
-		busStops.emplace_back(stopid, stopname, stopsite, latitude, longitude, syscode, system, municipality);
 	}
 	file.close();
 }
