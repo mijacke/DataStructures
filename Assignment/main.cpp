@@ -1,16 +1,17 @@
 #include "BusStopManager.h"
 #include <iostream>
+#include <filesystem>
 
 int main()
 {
 	//#include <libds/amt/implicit_sequence.h>
 	//ds::amt::ImplicitSequence<int> seq;
 
-	// Debug output to ensure this part of the code is reached
 	std::cout << "Loading bus stops from CSV..." << std::endl;
 
+	std::string path = "cow_busstops.csv";
 	BusStopManager manager;
-	manager.loadFromCSV("Resource Files/cow_busstops.csv");
+	manager.loadFromCSV(path);
 
 	// Check how many bus stops have been loaded
 	std::cout << "Bus stops loaded: " << manager.getBusStopCount() << std::endl;
