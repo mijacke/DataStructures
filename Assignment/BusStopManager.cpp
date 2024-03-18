@@ -14,20 +14,16 @@ void BusStopManager::loadFromCSV(const std::string& filename)
 
 	std::string line;
 	std::getline(file, line); // skip header line
+	int lineCounter = 1;
 
 	while (std::getline(file, line))
 	{
 		//stopid; stopname; stopsite; latitude; longitude; syscode; system; municipality
 		std::stringstream s(line);
 		std::string cell; // skiped header line
-		std::string stopid;
-		std::string stopname;
-		std::string stopsite;
-		double latitude;
-		double longitude;
-		std::string syscode;
-		std::string system;
-		std::string municipality;
+
+		std::string stopid, stopname, stopsite, syscode, system, municipality;
+		double latitude, longitude;
 
 		std::getline(s, cell, ';'); // skiped header line
 		std::getline(s, stopid, ';');
@@ -38,6 +34,12 @@ void BusStopManager::loadFromCSV(const std::string& filename)
 		std::getline(s, syscode, ';');
 		std::getline(s, system, ';');
 		std::getline(s, municipality, ';');
+
+		std::cout << lineCounter << ". " << stopid << "; " << stopname << "; " << stopsite << "; "
+			<< latitude << "; " << longitude << "; " << syscode << "; "
+			<< system << "; " << municipality << std::endl;
+
+		lineCounter++;
 
 		busStops.emplace_back(stopid, stopname, stopsite, latitude, longitude, syscode, system, municipality);
 	}
