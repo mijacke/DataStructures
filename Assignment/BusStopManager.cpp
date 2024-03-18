@@ -1,6 +1,7 @@
 #include "BusStopManager.h"
 
 #include <fstream>
+#include <sstream> // for std::stringstream
 
 void BusStopManager::loadFromCSV(const std::string& filename)
 {
@@ -12,6 +13,7 @@ void BusStopManager::loadFromCSV(const std::string& filename)
 	{
 		//stopid; stopname; stopsite; latitude; longitude; syscode; system; municipality
 		std::stringstream s(line);
+		std::string cell; // skiped header line
 		std::string stopid;
 		std::string stopname;
 		std::string stopsite;
@@ -20,5 +22,8 @@ void BusStopManager::loadFromCSV(const std::string& filename)
 		std::string syscode;
 		std::string system;
 		std::string municipality;
+
+		std::getline(s, cell, ';'); // skiped header line
+		std::getline(s, stopid, ';');
 	}
 }
