@@ -7,14 +7,14 @@ int main()
 	//#include <libds/amt/implicit_sequence.h>
 	//ds::amt::ImplicitSequence<int> seq;
 
-	std::cout << "Loading bus stops from CSV..." << std::endl;
+	std::cout << "Loading bus stops from CSV...\n" << std::endl;
 
 	std::string path = "cow_busstops.csv";
 	BusStopManager manager;
 	manager.loadFromCSV(path);
 
 	// Check how many bus stops have been loaded
-	std::cout << "Bus stops loaded: " << manager.getBusStopCount() << std::endl;
+	std::cout << "\nBus stops loaded: " << manager.getBusStopCount() << std::endl;
 
 	auto startsWith = [](const std::string& prefix) {
 		return [&prefix](const BusStop& stop) {
@@ -28,17 +28,29 @@ int main()
 		};
 	};
 
-	// Filter bus stops that start with ...
-	std::cout << "Filtering bus stops..." << std::endl;
+	std::string startsWithStr = "Davis";
+	std::string containsStr = "Davis";
 
-	std::vector<BusStop> filteredStops = manager.filterBusStops(startsWith("Davis"));
-	for (const BusStop& stop : filteredStops)
+	std::vector<BusStop> filteredStopsStartsWith = manager.filterBusStops(startsWith(startsWithStr));
+	std::vector<BusStop> filteredStopsContaining = manager.filterBusStops(contains(containsStr));
+
+	// Filter bus stops that start with ...
+	std::cout << "Filtering bus stops that starts with '" << startsWithStr << "'...\n" << std::endl;
+
+	for (const BusStop& stop : filteredStopsStartsWith)
+	{
+		std::cout << stop.getName() << " at " << stop.getMunicipality() << std::endl;
+	}
+	
+	// Filter bus stops that contain ...
+	std::cout << "\nFiltering bus stops that contain '" << containsStr << "'...\n" << std::endl;
+
+	for (const BusStop& stop : filteredStopsContaining)
 	{
 		std::cout << stop.getName() << " at " << stop.getMunicipality() << std::endl;
 	}
 
-	// Debug
-	std::cout << "Finished filtering bus stops." << std::endl;
+	std::cout << "\nFinished filtering bus stops." << std::endl;
 
 	return 0;
 }
