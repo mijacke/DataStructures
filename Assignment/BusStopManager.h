@@ -12,5 +12,6 @@ private:
 public:
 	void loadFromCSV(const std::string& filename);
 	std::vector<BusStop> filterBusStops(std::function<bool(const BusStop&)> predicate) const;
+	size_t getBusStopCount() const { return busStops.size(); }
 };
 
