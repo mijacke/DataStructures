@@ -12,42 +12,42 @@ BusStop::~BusStop()
 
 const std::string& BusStop::getStopId() const
 {
-	// TODO: insert return statement here
+	return stopId;
 }
 
 const std::string& BusStop::getName() const
 {
-	// TODO: insert return statement here
+	return name;
 }
 
 const std::string& BusStop::getStopSite() const
 {
-	// TODO: insert return statement here
+	return stopSite;
 }
 
 double BusStop::getLatitude() const
 {
-	return 0.0;
+	return latitude;
 }
 
 double BusStop::getLongitude() const
 {
-	return 0.0;
+	return longitude;
 }
 
 const std::string& BusStop::getSysCode() const
 {
-	// TODO: insert return statement here
+	return sysCode;
 }
 
 const std::string& BusStop::getSystem() const
 {
-	// TODO: insert return statement here
+	return system;
 }
 
 const std::string& BusStop::getMunicipality() const
 {
-	// TODO: insert return statement here
+	return municipality;
 }
 
 
