@@ -37,3 +37,16 @@ void BusStopManager::loadFromCSV(const std::string& filename)
 	}
 	file.close();
 }
+
+std::vector<BusStop> BusStopManager::filterBusStops(std::function<bool(const BusStop&)> predicate) const
+{
+	std::vector<BusStop> filteredBusStops;
+	for (const auto& stop : busStops)
+	{
+		if (predicate(stop))
+		{
+			filteredBusStops.push_back(stop);
+		}
+	}
+	return filteredBusStops;
+}
