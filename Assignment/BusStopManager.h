@@ -16,6 +16,5 @@ public:
 	size_t getBusStopCount() const { return busStops.size(); }
 	void clearBusStops() { busStops.clear(); }
 	void setDisplayDetails(bool choice);
-	bool shouldDisplayDetails() const { return displayDetails; }
+	bool getDisplayDetails() const { return displayDetails; }
 };
-
