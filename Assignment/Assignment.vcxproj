@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application.cpp" />
     <ClCompile Include="BusStop.cpp" />
     <ClCompile Include="BusStopManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -145,6 +146,7 @@
     <None Include="wkt_busstops.csv" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application.h" />
     <ClInclude Include="BusStop.h" />
     <ClInclude Include="BusStopManager.h" />
   </ItemGroup>
