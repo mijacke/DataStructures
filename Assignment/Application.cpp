@@ -64,8 +64,33 @@ void Application::applyFilter() {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
 
         switch (choice) {
-            // Cases 1, 2, 3, and 4 are similar to your original code.
-            // ...
+        case 1: {
+            std::cout << "Enter a string to filter bus stops that start with: ";
+            std::getline(std::cin, filterStr);
+            filteredStops = manager.filterBusStops([&filterStr](const BusStop& stop) {
+                return stop.getName().substr(0, filterStr.size()) == filterStr;
+                });
+            break;
+        }
+        case 2: {
+            std::cout << "Enter a string to filter bus stops that contain: ";
+            std::getline(std::cin, filterStr);
+            filteredStops = manager.filterBusStops([&filterStr](const BusStop& stop) {
+                return stop.getName().find(filterStr) != std::string::npos;
+                });
+            break;
+        }
+        case 3:
+            std::cout << "Enter the path to the CSV file: ";
+            std::getline(std::cin, path);
+            manager.loadFromCSV(path);
+            continue;
+        case 4:
+            filtering = false;
+            continue;
+        default:
+            std::cout << "Invalid choice.\n";
+            continue;
         }
     }
 }
