@@ -9,6 +9,18 @@
 #include <Windows.h>
 #undef max
 
+std::vector<std::string> csvFiles = {
+	"cow_busstops.csv",
+    "diakritika_busstops.csv",
+    "kam_busstops.csv",
+    "nan_busstops.csv",
+    "vic_busstops.csv",
+    "vly_busstops.csv",
+    "whi_busstops.csv",
+    "wil_busstops.csv",
+    "wkt_busstops.csv",
+};
+
 void Application::run() {
     SetConsoleCP(1250);
     SetConsoleOutputCP(1250);
@@ -17,43 +29,44 @@ void Application::run() {
     std::cout << "   Welcome to the Bus Stop Manager   \n";
     std::cout << "=====================================\n";
 
-    // Ask the user if they want to display bus stop details
+    // Preload all CSV data into memory.
+    manager.loadAllCSVs(csvFiles);
+
+    // Ask the user if they want to display bus stop details.
     char detailChoice;
     std::cout << "Do you want to display bus stop details? (Y/N): ";
     std::cin >> detailChoice;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     manager.setDisplayDetails(detailChoice == 'Y' || detailChoice == 'y');
 
-    loadBusStops();
+    chooseCSVFile(); // Let the user select which CSV file to work with initially.
     applyFilter();
 
     std::cout << "\nThank you for using Bus Stop Manager!\n";
     std::cout << "Program terminated.\n";
 }
 
-
-void Application::loadBusStops() {
-    std::string path;
-    bool loadSuccessful = false;
-    while (!loadSuccessful) {
-        std::cout << "Enter the path to the CSV file: ";
-        std::getline(std::cin, path);
-        manager.loadFromCSV(path);
-        loadSuccessful = manager.getBusStopCount() > 0;
-
-        if (loadSuccessful) {
-            std::cout << "\nBus stops loaded successfully! Total: " << manager.getBusStopCount() << "\n";
-        }
-        else {
-            std::cerr << "Failed to load bus stops from the file. Do you want to try again? (Y/N): ";
-            char retryChoice;
-            std::cin >> retryChoice;
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            if (retryChoice != 'Y' && retryChoice != 'y') {
-                exit(1);
-            }
-        }
+void Application::chooseCSVFile() {
+    std::cout << "Please choose a CSV file to work with by entering the corresponding number:\n";
+    for (size_t i = 0; i < csvFiles.size(); ++i) {
+        std::cout << i + 1 << ". " << csvFiles[i] << "\n";
     }
+
+    size_t fileIndex;
+    std::cin >> fileIndex;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    if (fileIndex > 0 && fileIndex <= csvFiles.size()) {
+        manager.setCurrentBusStops(csvFiles[fileIndex - 1]);
+    }
+    else {
+        std::cerr << "Invalid file number.\n";
+        exit(1); // or you could loop back and ask again
+    }
+    // Display a message about the selected file
+    std::cout << "Selected: " << csvFiles[fileIndex - 1] << "\n";
+    std::cout << "Loaded bus stops: " << manager.getBusStopCount() << "\n";
+
 }
 
 void Application::applyFilter() {
@@ -101,18 +114,7 @@ void Application::applyFilter() {
                 break;
             }
             case 3: {
-                std::string path;
-                std::cout << "\n=====[File Reload]=====\n";
-                std::cout << "Enter the path to the new CSV file: ";
-                std::getline(std::cin, path);
-                manager.clearBusStops(); // Clear the current bus stops
-                manager.loadFromCSV(path);
-                if (manager.getBusStopCount() > 0) {
-                    std::cout << "\nNew bus stops loaded: " << manager.getBusStopCount() << std::endl;
-                }
-                else {
-                    std::cerr << "Failed to load bus stops from the new file.\n";
-                }
+                chooseCSVFile();
                 break;
             }
             case 4: {

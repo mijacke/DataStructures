@@ -5,82 +5,56 @@
 #include <iostream>
 #include <iomanip> // for std::setw and std::setprecision
 
-void BusStopManager::loadFromCSV(const std::string& filename)
-{
-	std::ifstream file(filename);
-	if (!file.is_open()) {
-		std::cerr << "Failed to open the file: " << filename << std::endl;
-		return;
-	}
 
-	std::string line;
-	std::getline(file, line); // skip header line
-	int lineCounter = 1;
-
-	if (displayDetails)
-	{
-		std::cout << std::setw(4) << std::left << "Line" << "|"
-			<< std::setw(10) << std::left << "StopID" << "|"
-			<< std::setw(50) << std::left << "StopName" << "|"
-			<< std::setw(50) << std::left << "StopSite" << "|"
-			<< std::setw(12) << std::left << "Latitude" << "|"
-			<< std::setw(12) << std::left << "Longitude" << "|"
-			<< std::setw(5) << std::left << "SysCode" << "|"
-			<< std::setw(40) << std::left << "System" << "|"
-			<< std::setw(20) << std::left << "Municipality"
-			<< std::endl;
-		std::cout << std::string(210, '-') << std::endl;
-	}
-
-	while (std::getline(file, line))
-	{
-		std::stringstream s(line);
-		std::string field;
-		std::vector<std::string> fields;
-
-		// Read each field from the line into the fields vector
-		while (std::getline(s, field, ';')) {
-			fields.push_back(field);
+void BusStopManager::loadAllCSVs(const std::vector<std::string>& filenames) {
+	for (const auto& filename : filenames) {
+		std::ifstream file(filename);
+		if (!file.is_open()) {
+			std::cerr << "Failed to open the file: " << filename << std::endl;
+			continue;
 		}
 
+		std::string line;
+		std::getline(file, line); // Skip header line.
+		std::vector<BusStop> busStops;
 
-		if (fields.size() == 8) {
-			std::string stopid = fields[0];
-			std::string stopname = fields[1];
-			std::string stopsite = fields[2];
-			double latitude = std::stod(fields[3]);
-			double longitude = std::stod(fields[4]);
-			std::string syscode = fields[5];
-			std::string system = fields[6];
-			std::string municipality = fields[7];
+		while (std::getline(file, line)) {
+			std::stringstream s(line);
+			std::string field;
+			std::vector<std::string> fields;
+			while (std::getline(s, field, ';')) {
+				fields.push_back(field);
+			}
 
-			busStops.emplace_back(stopid, stopname, stopsite, latitude, longitude, syscode, system, municipality);
-
-			if (displayDetails) {
-				std::cout << std::setw(4) << std::left << lineCounter << "|"
-					<< std::setw(10) << std::left << stopid << "|"
-					<< std::setw(50) << std::left << stopname << "|"
-					<< std::setw(50) << std::left << stopsite << "|"
-					<< std::setw(12) << std::left << std::fixed << std::setprecision(6) << latitude << "|"
-					<< std::setw(12) << std::left << std::fixed << std::setprecision(6) << longitude << "|"
-					<< std::setw(7) << std::left << syscode << "|"
-					<< std::setw(40) << std::left << system << "|"
-					<< std::setw(20) << std::left << municipality
-					<< std::endl;
+			if (fields.size() == 8) {
+				BusStop stop(fields[0], fields[1], fields[2], std::stod(fields[3]), std::stod(fields[4]), fields[5], fields[6], fields[7]);
+				busStops.push_back(stop);
+			}
+			else {
+				std::cerr << "Error: Line does not have 8 fields as expected." << std::endl;
 			}
 		}
-		else {
-			std::cerr << "Error: Line " << lineCounter << " does not have 8 fields as expected." << std::endl;
-		}
-		lineCounter++;
+		file.close();
+		busStopsData[filename] = busStops;
 	}
-	file.close();
 }
+
+void BusStopManager::setCurrentBusStops(const std::string& filename) {
+	auto it = busStopsData.find(filename);
+	if (it != busStopsData.end()) {
+		currentBusStops = it->second;
+	}
+	else {
+		std::cerr << "No data found for the file: " << filename << std::endl;
+		currentBusStops.clear();
+	}
+}
+
 
 std::vector<BusStop> BusStopManager::filterBusStops(std::function<bool(const BusStop&)> predicate) const
 {
 	std::vector<BusStop> filteredBusStops;
-	for (const auto& stop : busStops)
+	for (const auto& stop : currentBusStops)
 	{
 		if (predicate(stop))
 		{
@@ -93,4 +67,12 @@ std::vector<BusStop> BusStopManager::filterBusStops(std::function<bool(const Bus
 void BusStopManager::setDisplayDetails(bool choice)
 {
 		displayDetails = choice;
+}
+
+std::vector<std::string> BusStopManager::getCSVFileNames() const {
+	std::vector<std::string> filenames;
+	for (const auto& pair : busStopsData) {
+		filenames.push_back(pair.first);
+	}
+	return filenames;
 }

@@ -9,7 +9,7 @@ public:
     void run();
 private:
     BusStopManager manager;
-    void loadBusStops();
     void applyFilter();
     void displayFilterResults(const std::vector<BusStop>& filteredStops);
+    void chooseCSVFile();
 };
