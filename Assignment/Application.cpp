@@ -1,4 +1,4 @@
-#include "Application.h"
+﻿#include "Application.h"
 #include <iostream>
 #include <limits>
 
@@ -13,13 +13,30 @@ void Application::run() {
     SetConsoleCP(1250);
     SetConsoleOutputCP(1250);
 
+    std::cout << "=====================================\n";
+    std::cout << "   Welcome to the Bus Stop Manager   \n";
+    std::cout << "=====================================\n";
+
+    // Ask the user if they want to display bus stop details
+    char detailChoice;
+    std::cout << "Do you want to display bus stop details? (Y/N): ";
+    std::cin >> detailChoice;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    // Set the display details according to the user's choice
+    bool displayDetails = (detailChoice == 'Y' || detailChoice == 'y');
+    manager.setDisplayDetails(displayDetails);
+
     loadBusStops();
     applyFilter();
 
-    std::cout << "Program terminated." << std::endl;
+    std::cout << "\nThank you for using Bus Stop Manager!\n";
+    std::cout << "Program terminated.\n";
 }
 
+
 void Application::loadBusStops() {
+    std::cout << "\n[Bus Stop Loader]\n";
     std::string path;
     bool loadSuccessful = false;
     while (!loadSuccessful) {
@@ -30,12 +47,12 @@ void Application::loadBusStops() {
 
         if (manager.getBusStopCount() > 0) {
             loadSuccessful = true;
-            std::cout << "\nBus stops loaded: " << manager.getBusStopCount() << std::endl;
+            std::cout << "\nBus stops loaded successfully! Total: " << manager.getBusStopCount() << "\n";
         }
         else {
             std::cerr << "Failed to load bus stops from the file.\n";
             if (!promptRetry()) {
-                exit(1); // Exit the program if the user does not want to try again
+                exit(1);
             }
         }
     }
@@ -45,24 +62,38 @@ bool Application::promptRetry() {
     char choice;
     std::cout << "Would you like to try again? (Y/N): ";
     std::cin >> choice;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     return (choice == 'Y' || choice == 'y');
 }
 
 void Application::applyFilter() {
     std::string path;
     bool filtering = true;
+    bool displayDetails = false;
+
     while (filtering) {
-        std::cout << "Choose a filter to apply:\n";
-        std::cout << "1. Filter by starts with\n";
-        std::cout << "2. Filter by contains\n";
-        std::cout << "3. Select a different file\n";
-        std::cout << "4. Exit\n";
+        std::cout << "\n+-----------------------------------+\n";
+        std::cout << "|           Filter Menu             |\n";
+        std::cout << "+-----------------------------------+\n";
+        std::cout << "| 1. Filter by 'starts with'        |\n";
+        std::cout << "| 2. Filter by 'contains'           |\n";
+        std::cout << "| 3. Select a different file        |\n";
+        std::cout << "| 4. Toggle display bus stop details|\n";
+        std::cout << "| 5. Exit                           |\n";
+        std::cout << "+-----------------------------------+\n";
         std::cout << "Enter your choice: ";
 
         int choice;
-        std::cin >> choice;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+        if (std::cin >> choice) {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
+        }
+        else {
+            // Input was not an integer, clear the error state and ignore the rest of the line
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Invalid input. Please enter a number from 1 to 4.\n";
+            continue;
+        }
 
         std::string filterStr;
         std::vector<BusStop> filteredStops;
@@ -85,7 +116,7 @@ void Application::applyFilter() {
             break;
         }
         case 3: {
-            std::cout << "\n===== Reload Bus Stops =====\n";
+            std::cout << "\n=====[File Reload]=====\n";
             std::cout << "Enter the path to the new CSV file: ";
             std::getline(std::cin, path);
             manager.clearBusStops(); // Clear the current bus stops
@@ -101,19 +132,36 @@ void Application::applyFilter() {
             }
             break;
         }
-        case 4:
-            filtering = false;
+        case 4: {
+            displayDetails = !displayDetails;
+            manager.setDisplayDetails(displayDetails);
+            std::cout << (displayDetails ? "Bus stop details will be shown.\n" : "Bus stop details will be hidden.\n");
             break;
+        }
+        case 5: {
+			filtering = false;
+			break;
+        }
         default:
-            std::cout << "Invalid choice. Please enter a number from 1 to 4.\n";
+            std::cout << "Invalid choice. Please enter a number from 1 to 5.\n";
             break;
         }
 
-        if (!filteredStops.empty()) {
-            for (const BusStop& stop : filteredStops) {
-                std::cout << stop.getName() << " at " << stop.getMunicipality() << std::endl;
-            }
-            std::cout << "\nFiltering complete.\n";
+        if (choice == 1 || choice == 2) {
+            displayFilterResults(filteredStops);
         }
+    }
+}
+
+void Application::displayFilterResults(const std::vector<BusStop>& stops) {
+    if (!stops.empty()) {
+        std::cout << "\n[Filtered Results]\n";
+        for (const BusStop& stop : stops) {
+            std::cout << "• " << stop.getName() << " at " << stop.getMunicipality() << std::endl;
+        }
+        std::cout << "\nFiltering complete.\n";
+    }
+    else {
+        std::cout << "No results found for the given filter.\n";
     }
 }
