@@ -1,7 +1,7 @@
 #include "BusStopManager.h"
 
 #include <fstream>
-#include <sstream> // for std::stringstream
+#include <sstream>
 #include <iostream>
 #include <iomanip> // for std::setw and std::setprecision
 
@@ -60,7 +60,7 @@ void BusStopManager::loadFromCSV(const std::string& filename)
 				<< std::setw(50) << std::left << stopsite << "|"
 				<< std::setw(12) << std::left << std::fixed << std::setprecision(6) << latitude << "|"
 				<< std::setw(12) << std::left << std::fixed << std::setprecision(6) << longitude << "|"
-				<< std::setw(5) << std::left << syscode << "|" 
+				<< std::setw(7) << std::left << syscode << "|" 
 				<< std::setw(40) << std::left << system << "|"
 				<< std::setw(20) << std::left << municipality
 				<< std::endl;

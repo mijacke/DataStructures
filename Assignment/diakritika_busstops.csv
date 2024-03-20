@@ -1,0 +1,21 @@
+stopid;stopname;stopsite;latitude;longitude;syscode;system;muni
+107744;Liberec Tymi·nov· (EB);Liberec_Tymi·nov·_(EB);49.075179;17.639355;CZE;Czech Republic Transit;Liberec
+107745;Brno Jedæov· (WB);Brno_Jedæov·_(WB);48.608488;18.153637;CZE;Czech Republic Transit;Brno
+107746;PlzeÚ Kohoutov˝ch (EB);PlzeÚ_Kohoutov˝ch_(EB);49.639518;15.723639;CZE;Czech Republic Transit;PlzeÚ
+107747;PlzeÚ Mezi Sklady (NB);PlzeÚ_Mezi_Sklady_(NB);48.774617;15.907686;CZE;Czech Republic Transit;PlzeÚ
+107748;PlzeÚ äùastn· (NB);PlzeÚ_äùastn·_(NB);49.726546;21.276934;CZE;Czech Republic Transit;PlzeÚ
+107749;Praha Bodvianska (SB);Praha_Bodvianska_(SB);49.151774;20.111646;CZE;Czech Republic Transit;Praha
+107750;Ostrava Jabloneck· (NB);Ostrava_Jabloneck·_(NB);48.998748;17.065756;CZE;Czech Republic Transit;Ostrava
+107751;Liberec Gusevova (EB);Liberec_Gusevova_(EB);49.321187;20.985033;CZE;Czech Republic Transit;Liberec
+107752;Praha Hontianska (EB);Praha_Hontianska_(EB);48.963763;20.541545;CZE;Czech Republic Transit;Praha
+107753;Liberec Beskydsk· (EB);Liberec_Beskydsk·_(EB);49.711062;15.970247;CZE;Czech Republic Transit;Liberec
+107754;éilina Irkutsk· (EB);éilina_Irkutsk·_(EB);49.019679;17.722373;SVK;Slovakia Transit;éilina
+107755;Koöice Poleradsk· (SB);Koöice_Poleradsk·_(SB);48.838905;21.704478;SVK;Slovakia Transit;Koöice
+107756;Nitra Biela (NB);Nitra_Biela_(NB);48.65284;16.277996;SVK;Slovakia Transit;Nitra
+107757;Preöov Horn·dska (WB);Preöov_Horn·dska_(WB);49.074564;17.649778;SVK;Slovakia Transit;Preöov
+107758;Preöov Mazancova (NB);Preöov_Mazancova_(NB);49.768273;17.955781;SVK;Slovakia Transit;Preöov
+107759;éilina DolnÌ Chaloupky (NB);éilina_DolnÌ_Chaloupky_(NB);49.527589;18.8613;SVK;Slovakia Transit;éilina
+107760;Bratislava Godrova (SB);Bratislava_Godrova_(SB);49.571002;21.404888;SVK;Slovakia Transit;Bratislava
+107761;Preöov JanËova (SB);Preöov_JanËova_(SB);49.184141;15.542665;SVK;Slovakia Transit;Preöov
+107762;Preöov Rumunsk· (SB);Preöov_Rumunsk·_(SB);49.065733;19.821393;SVK;Slovakia Transit;Preöov
+107763;éilina Cerhenick· (WB);éilina_Cerhenick·_(WB);48.5622;21.438621;SVK;Slovakia Transit;éilina

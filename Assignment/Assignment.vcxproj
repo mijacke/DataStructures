@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cow_busstops.csv" />
+    <None Include="diakritika_busstops.csv" />
     <None Include="kam_busstops.csv" />
     <None Include="nan_busstops.csv" />
     <None Include="vic_busstops.csv" />
