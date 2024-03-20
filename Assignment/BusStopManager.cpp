@@ -53,6 +53,35 @@ void BusStopManager::setCurrentBusStops(const std::string& filename)
     }
 }
 
+void BusStopManager::printCurrentBusStopsDetails() const {
+    if (!getDisplayDetails()) return; // Only print if detail display is enabled
+
+    std::cout << std::setw(4) << "Line" << "|"
+        << std::setw(10) << "StopID" << "|"
+        << std::setw(50) << "StopName" << "|"
+        << std::setw(50) << "StopSite" << "|"
+        << std::setw(12) << "Latitude" << "|"
+        << std::setw(12) << "Longitude" << "|"
+        << std::setw(7) << "SysCode" << "|"
+        << std::setw(40) << "System" << "|"
+        << std::setw(20) << "Municipality" << std::endl;
+    std::cout << std::string(210, '-') << std::endl;
+
+    int lineCounter = 1;
+    for (const auto& stop : currentBusStops) {
+        std::cout << std::setw(4) << std::left << lineCounter++ << "|"
+            << std::setw(10) << stop.getStopId() << "|"
+            << std::setw(50) << stop.getName() << "|"
+            << std::setw(50) << stop.getStopSite() << "|"
+            << std::setw(12) << std::fixed << std::setprecision(6) << stop.getLatitude() << "|"
+            << std::setw(12) << std::fixed << std::setprecision(6) << stop.getLongitude() << "|"
+            << std::setw(7) << stop.getSysCode() << "|"
+            << std::setw(40) << stop.getSystem() << "|"
+            << std::setw(20) << stop.getMunicipality() << std::endl;
+    }
+}
+
+
 std::vector<BusStop> BusStopManager::filterBusStops(std::function<bool(const BusStop&)> predicate) const 
 {
     std::vector<BusStop> filtered;
@@ -66,7 +95,7 @@ std::vector<BusStop> BusStopManager::filterBusStops(std::function<bool(const Bus
 
 void BusStopManager::setDisplayDetails(bool choice)
 {
-		displayDetails = choice;
+    displayDetails = choice;
 }
 
 std::vector<std::string> BusStopManager::getCSVFileNames() const 

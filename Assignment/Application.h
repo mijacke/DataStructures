@@ -12,7 +12,6 @@ public:
     void run();
 private:
     BusStopManager manager;
-    void askForDetailDisplay();
     void chooseCSVFile();
     void applyFilter();
     void displayFilterResults(const std::vector<BusStop>& stops);

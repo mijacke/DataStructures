@@ -19,6 +19,6 @@ public:
     size_t getBusStopCount() const { return currentBusStops.size(); }
     void setDisplayDetails(bool choice);
     bool getDisplayDetails() const { return displayDetails; }
-    // Additional helper function to get filenames for display
     std::vector<std::string> getCSVFileNames() const;
+    void printCurrentBusStopsDetails() const;
 };

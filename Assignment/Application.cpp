@@ -31,20 +31,11 @@ void Application::run() {
         << "=====================================\n";
 
     manager.loadAllCSVs(csvFiles);
-    askForDetailDisplay();
     chooseCSVFile();
     applyFilter();
 
     std::cout << "\nThank you for using Bus Stop Manager!\n"
         << "Program terminated.\n";
-}
-
-void Application::askForDetailDisplay() {
-    char detailChoice;
-    std::cout << "Do you want to display bus stop details? (Y/N): ";
-    std::cin >> detailChoice;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    manager.setDisplayDetails(detailChoice == 'Y' || detailChoice == 'y');
 }
 
 void Application::chooseCSVFile() {
@@ -65,6 +56,16 @@ void Application::chooseCSVFile() {
     // Display a message about the selected file
     std::cout << "Selected: " << csvFiles[fileIndex - 1] << "\n"
               << "Loaded bus stops: " << manager.getBusStopCount() << "\n\n";
+
+    char printChoice;
+    std::cout << "Do you want to print detailed information for the selected file? (Y/N): ";
+    std::cin >> printChoice;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    manager.setDisplayDetails(printChoice == 'Y' || printChoice == 'y');
+
+    if (manager.getDisplayDetails()) {
+        manager.printCurrentBusStopsDetails();
+    }
 }
 
 void Application::applyFilter() {
@@ -77,8 +78,7 @@ void Application::applyFilter() {
                   << "| 1. Filter by 'starts with'        |\n"
                   << "| 2. Filter by 'contains'           |\n"
                   << "| 3. Select a different file        |\n"
-                  << "| 4. Toggle display bus stop details|\n"
-                  << "| 5. Exit                           |\n"
+                  << "| 4. Exit                           |\n"
                   << "+-----------------------------------+\n"
                   << "Enter your choice: ";
 
@@ -95,13 +95,10 @@ void Application::applyFilter() {
                 chooseCSVFile();
                 break;
             case 4:
-                std::cout << (manager.getDisplayDetails() ? "Bus stop details will now be shown.\n" : "Bus stop details will now be hidden.\n");
-                break;
-            case 5:
                 filtering = false;
                 break;
             default:
-                std::cout << "Invalid choice. Please enter a number from 1 to 5.\n";
+                std::cout << "Invalid choice. Please enter a number from 1 to 4.\n";
                 break;
         }
     }
