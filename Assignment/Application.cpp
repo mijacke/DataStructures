@@ -7,7 +7,7 @@
 #endif
 
 #include <Windows.h>
-#undef max // Ensure that the max macro does not interfere with std::numeric_limits
+#undef max
 
 void Application::run() {
     SetConsoleCP(1250);
@@ -50,6 +50,7 @@ bool Application::promptRetry() {
 }
 
 void Application::applyFilter() {
+    std::string path;
     bool filtering = true;
     while (filtering) {
         std::cout << "Choose a filter to apply:\n";
@@ -62,6 +63,9 @@ void Application::applyFilter() {
         int choice;
         std::cin >> choice;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+
+        std::string filterStr;
+        std::vector<BusStop> filteredStops;
 
         switch (choice) {
         case 1: {
@@ -80,17 +84,36 @@ void Application::applyFilter() {
                 });
             break;
         }
-        case 3:
-            std::cout << "Enter the path to the CSV file: ";
+        case 3: {
+            std::cout << "\n===== Reload Bus Stops =====\n";
+            std::cout << "Enter the path to the new CSV file: ";
             std::getline(std::cin, path);
+            manager.clearBusStops(); // Clear the current bus stops
             manager.loadFromCSV(path);
-            continue;
+            if (manager.getBusStopCount() > 0) {
+                std::cout << "\nNew bus stops loaded: " << manager.getBusStopCount() << std::endl;
+            }
+            else {
+                std::cerr << "Failed to load bus stops from the new file.\n";
+                if (!promptRetry()) {
+                    std::cout << "No new file loaded. Keeping the existing data.\n";
+                }
+            }
+            break;
+        }
         case 4:
             filtering = false;
-            continue;
+            break;
         default:
-            std::cout << "Invalid choice.\n";
-            continue;
+            std::cout << "Invalid choice. Please enter a number from 1 to 4.\n";
+            break;
+        }
+
+        if (!filteredStops.empty()) {
+            for (const BusStop& stop : filteredStops) {
+                std::cout << stop.getName() << " at " << stop.getMunicipality() << std::endl;
+            }
+            std::cout << "\nFiltering complete.\n";
         }
     }
 }
