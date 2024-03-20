@@ -1,5 +1,6 @@
 ﻿#include "Application.h"
 #include <iostream>
+#include <iomanip>
 #include <limits>
 
 #ifdef _DEBUG
@@ -25,25 +26,25 @@ void Application::run() {
     SetConsoleCP(1250);
     SetConsoleOutputCP(1250);
 
-    std::cout << "=====================================\n";
-    std::cout << "   Welcome to the Bus Stop Manager   \n";
-    std::cout << "=====================================\n";
+    std::cout << "=====================================\n"
+        << "   Welcome to the Bus Stop Manager   \n"
+        << "=====================================\n";
 
-    // Preload all CSV data into memory.
     manager.loadAllCSVs(csvFiles);
+    askForDetailDisplay();
+    chooseCSVFile();
+    applyFilter();
 
-    // Ask the user if they want to display bus stop details.
+    std::cout << "\nThank you for using Bus Stop Manager!\n"
+        << "Program terminated.\n";
+}
+
+void Application::askForDetailDisplay() {
     char detailChoice;
     std::cout << "Do you want to display bus stop details? (Y/N): ";
     std::cin >> detailChoice;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     manager.setDisplayDetails(detailChoice == 'Y' || detailChoice == 'y');
-
-    chooseCSVFile(); // Let the user select which CSV file to work with initially.
-    applyFilter();
-
-    std::cout << "\nThank you for using Bus Stop Manager!\n";
-    std::cout << "Program terminated.\n";
 }
 
 void Application::chooseCSVFile() {
@@ -53,96 +54,85 @@ void Application::chooseCSVFile() {
     }
 
     size_t fileIndex;
-    std::cin >> fileIndex;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-    if (fileIndex > 0 && fileIndex <= csvFiles.size()) {
-        manager.setCurrentBusStops(csvFiles[fileIndex - 1]);
+    if (!(std::cin >> fileIndex) || fileIndex < 1 || fileIndex > csvFiles.size()) {
+        std::cin.clear(); // Clear the error flag
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard the rest of the line
+        std::cerr << "Invalid file number.\nExiting...\n";
+        exit(1);
     }
-    else {
-        std::cerr << "Invalid file number.\n";
-        exit(1); // or you could loop back and ask again
-    }
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard the rest of the line
+    manager.setCurrentBusStops(csvFiles[fileIndex - 1]);
     // Display a message about the selected file
-    std::cout << "Selected: " << csvFiles[fileIndex - 1] << "\n";
-    std::cout << "Loaded bus stops: " << manager.getBusStopCount() << "\n";
-
+    std::cout << "Selected: " << csvFiles[fileIndex - 1] << "\n"
+              << "Loaded bus stops: " << manager.getBusStopCount() << "\n\n";
 }
 
 void Application::applyFilter() {
     bool filtering = true;
 
     while (filtering) {
-        std::cout << "\n+-----------------------------------+\n";
-        std::cout << "|           Filter Menu             |\n";
-        std::cout << "+-----------------------------------+\n";
-        std::cout << "| 1. Filter by 'starts with'        |\n";
-        std::cout << "| 2. Filter by 'contains'           |\n";
-        std::cout << "| 3. Select a different file        |\n";
-        std::cout << "| 4. Toggle display bus stop details|\n";
-        std::cout << "| 5. Exit                           |\n";
-        std::cout << "+-----------------------------------+\n";
-        std::cout << "Enter your choice: ";
+        std::cout << "+-----------------------------------+\n"
+                  << "|           Filter Menu             |\n"
+                  << "+-----------------------------------+\n"
+                  << "| 1. Filter by 'starts with'        |\n"
+                  << "| 2. Filter by 'contains'           |\n"
+                  << "| 3. Select a different file        |\n"
+                  << "| 4. Toggle display bus stop details|\n"
+                  << "| 5. Exit                           |\n"
+                  << "+-----------------------------------+\n"
+                  << "Enter your choice: ";
 
         int choice;
-        if (!(std::cin >> choice)) {
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "Invalid input. Please enter a number from 1 to 5.\n";
-            continue;
-        }
+        std::cin >> choice;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-        std::string filterStr;
-        std::vector<BusStop> filteredStops;
-
         switch (choice) {
-            case 1: {
-                std::cout << "Enter a string to filter bus stops that start with: ";
-                std::getline(std::cin, filterStr);
-                displayFilterResults(manager.filterBusStops(
-                    [&filterStr](const BusStop& stop) { return stop.getName().substr(0, filterStr.size()) == filterStr; }
-                ));
+            case 1:
+            case 2:
+                handleFiltering(choice);
                 break;
-            }
-            case 2: {
-                std::cout << "Enter a string to filter bus stops that contain: ";
-                std::getline(std::cin, filterStr);
-                displayFilterResults(manager.filterBusStops(
-                    [&filterStr](const BusStop& stop) { return stop.getName().find(filterStr) != std::string::npos; }
-                ));
-                break;
-            }
-            case 3: {
+            case 3:
                 chooseCSVFile();
                 break;
-            }
-            case 4: {
-                manager.setDisplayDetails(!manager.getDisplayDetails());
-                std::cout << (manager.getDisplayDetails() ? "Bus stop details will be shown.\n" : "Bus stop details will be hidden.\n");
+            case 4:
+                std::cout << (manager.getDisplayDetails() ? "Bus stop details will now be shown.\n" : "Bus stop details will now be hidden.\n");
                 break;
-            }
-            case 5: {
+            case 5:
                 filtering = false;
                 break;
-            }
-            default: {
+            default:
                 std::cout << "Invalid choice. Please enter a number from 1 to 5.\n";
                 break;
-            }
         }
     }
 }
 
+void Application::handleFiltering(int choice) {
+    std::string filterStr;
+    std::cout << "Enter a string to filter bus stops that "
+        << (choice == 1 ? "start with: " : "contain: ");
+    std::getline(std::cin, filterStr);
+
+    displayFilterResults(manager.filterBusStops([&filterStr, choice](const BusStop& stop) {
+        return choice == 1
+            ? stop.getName().substr(0, filterStr.size()) == filterStr
+            : stop.getName().find(filterStr) != std::string::npos;
+        }));
+}
+
 void Application::displayFilterResults(const std::vector<BusStop>& stops) {
-    if (!stops.empty()) {
-        std::cout << "\n[Filtered Results]\n";
-        for (const BusStop& stop : stops) {
-            std::cout << "• " << stop.getName() << " at " << stop.getMunicipality() << std::endl;
+    if (manager.getDisplayDetails()) {
+        // Display detailed information if enabled
+        for (const auto& stop : stops) {
+            std::cout << "• " << stop.getName() << " at " << stop.getMunicipality() << "\n";
         }
-        std::cout << "\nFiltering complete.\n";
     }
     else {
-        std::cout << "No results found for the given filter.\n";
+        // Display basic information if detail display is disabled
+        for (const auto& stop : stops) {
+            std::cout << "• " << stop.getName() << "\n";
+        }
     }
+
+    std::cout << "\nFiltering complete. Found " << stops.size() << " results.\n";
 }
