@@ -109,76 +109,35 @@ namespace ds::amt {
 	template<typename DataType>
     typename ImplicitSequence<DataType>::BlockType* ImplicitSequence<DataType>::accessFirst() const
     {
-		size_t velkost = this->getMemoryManager()->getCapacity();
-		if (velkost > 0)
-		{
-			return static_cast<typename ImplicitSequence<DataType>::BlockType*>
-				(this->getMemoryManager()->calculateAddress(this->getMemoryManager()->getBlockAt(0)));
-		}
-		else
-		{
-			return nullptr;
-		}
+		return this->size() > 0 ? &this->getMemoryManager()->getBlockAt(0) : nullptr;
 	}
 
 	template<typename DataType>
 	typename ImplicitSequence<DataType>::BlockType* ImplicitSequence<DataType>::accessLast() const
     {
-		size_t velkost = this->getMemoryManager()->getCapacity();
-		if (velkost > 0)
-		{
-			return static_cast<typename ImplicitSequence<DataType>::BlockType*>
-				(this->getMemoryManager()->calculateAddress(this->getMemoryManager()->getBlockAt(velkost - 1)));
-		}
-		else
-		{
-			return nullptr;
-		}
+		return this->size() > 0 ? &this->getMemoryManager()->getBlockAt(this->size() - 1) : nullptr;
 	}
 
 	template<typename DataType>
 	typename ImplicitSequence<DataType>::BlockType* ImplicitSequence<DataType>::access(size_t index) const
     {
-		if (index >= 0 && index < this->getMemoryManager()->getCapacity())
-		{
-			// dajAdresu(správcaPamate dajBlokPamäte(index))
-			return static_cast<typename ImplicitSequence<DataType>::BlockType*>
-				(this->getMemoryManager()->calculateAddress(this->getMemoryManager()->getBlockAt(index)));
-		}
-		else
-		{
-			return nullptr;
-		}
+		return index < this->size() ? &this->getMemoryManager()->getBlockAt(index) : nullptr;
 	}
 
 	template<typename DataType>
 	typename ImplicitSequence<DataType>::BlockType* ImplicitSequence<DataType>::accessNext(const BlockType& block) const
     {
-		size_t index = indexOfNext(this->getMemoryManager()->calculateIndex(block));
-		if (index < this->getMemoryManager()->getCapacity())
-		{
-			return static_cast<typename ImplicitSequence<DataType>::BlockType*>
-				(this->getMemoryManager()->calculateAddress(this->getMemoryManager()->getBlockAt(index)));
-		}
-		else
-		{
-			return nullptr;
-		}
+		MemoryManagerType* manager = this->getMemoryManager();
+		const size_t index = this->indexOfNext(manager->calculateIndex(block));
+		return index < this->size() ? &manager->getBlockAt(index) : nullptr;
 	}
 
 	template<typename DataType>
 	typename ImplicitSequence<DataType>::BlockType* ImplicitSequence<DataType>::accessPrevious(const BlockType& block) const
     {
-		size_t index = indexOfPrevious(this->getMemoryManager()->calculateIndex(block));
-		if (index >= 0)
-		{
-			return static_cast<typename ImplicitSequence<DataType>::BlockType*>
-				(this->getMemoryManager()->calculateAddress(this->getMemoryManager()->getBlockAt(index)));
-		}
-		else
-		{
-			return nullptr;
-		}
+		MemoryManagerType* memManager = this->getMemoryManager();
+		const size_t index = this->indexOfPrevious(memManager->calculateIndex(block));
+		return index != INVALID_INDEX ? &memManager->getBlockAt(index) : nullptr;
 	}
 
 	template<typename DataType>
@@ -202,13 +161,15 @@ namespace ds::amt {
 	template<typename DataType>
 	typename ImplicitSequence<DataType>::BlockType& ImplicitSequence<DataType>::insertAfter(BlockType& block)
     {
-		return *this->getMemoryManager()->allocateMemoryAt(this->getMemoryManager()->calculateIndex(block) + 1);
+		MemoryManagerType* manager = this->getMemoryManager();
+		return *manager->allocateMemoryAt(manager->calculateIndex(block) + 1);
 	}
 
 	template<typename DataType>
 	typename ImplicitSequence<DataType>::BlockType& ImplicitSequence<DataType>::insertBefore(BlockType& block)
     {
-		return *this->getMemoryManager()->allocateMemoryAt(this->getMemoryManager()->calculateIndex(block));
+		MemoryManagerType* manager = this->getMemoryManager();
+		return *manager->allocateMemoryAt(manager->calculateIndex(block));
 	}
 
 	template<typename DataType>
@@ -232,13 +193,15 @@ namespace ds::amt {
 	template<typename DataType>
     void ImplicitSequence<DataType>::removeNext(const BlockType& block)
 	{
-		this->getMemoryManager()->releaseMemoryAt(indexOfNext(this->getMemoryManager()->calculateIndex(block)));
+		MemoryManagerType* memManager = this->getMemoryManager();
+		memManager->releaseMemoryAt(this->indexOfNext(memManager->calculateIndex(block)));
 	}
 
 	template<typename DataType>
     void ImplicitSequence<DataType>::removePrevious(const BlockType& block)
 	{
-		this->getMemoryManager()->releaseMemoryAt(indexOfPrevious(this->getMemoryManager()->calculateIndex(block)));
+		MemoryManagerType* memManager = this->getMemoryManager();
+		memManager->releaseMemoryAt(this->indexOfPrevious(memManager->calculateIndex(block)));
 	}
 
 	template<typename DataType>
@@ -348,43 +311,15 @@ namespace ds::amt {
 	template<typename DataType>
     size_t CyclicImplicitSequence<DataType>::indexOfNext(size_t currentIndex) const
 	{
-		size_t velkost = this->getMemoryManager()->getCapacity(); // Získajte kapacitu štruktúry pamäte.
-
-		if (velkost != 0) {
-			if (currentIndex >= velkost - 1) 
-			{
-				return 0;
-			}
-			else 
-			{
-				return currentIndex + 1;
-			}
-		} 
-		else 
-		{
-			return INVALID_INDEX; // Neplatný index, môžete definova konštantu alebo použi tento štandardný spôsob.
-		}
+		const size_t size = this->size();
+		return size != 0 ? currentIndex >= size - 1 ? 0 : currentIndex + 1 : INVALID_INDEX;
 	}
 
 	template<typename DataType>
     size_t CyclicImplicitSequence<DataType>::indexOfPrevious(size_t currentIndex) const
 	{
-		size_t velkost = this->getMemoryManager()->getCapacity(); // Získajte kapacitu štruktúry pamäte.
-
-		if (velkost != 0) {
-			if (currentIndex <= 0) 
-			{
-				return velkost - 1;
-			}
-			else 
-			{
-				return currentIndex - 1;
-			}
-		} 
-		else 
-		{
-			return INVALID_INDEX; // Neplatný index, môžete definova konštantu alebo použi tento štandardný spôsob.
-		}
+		const size_t size = this->size();
+		return size != 0 ? currentIndex <= 0 ? size - 1 : currentIndex - 1 : INVALID_INDEX;
 	}
 
 }

@@ -26,9 +26,11 @@ void Application::run() {
     SetConsoleCP(1250);
     SetConsoleOutputCP(1250);
 
-    std::cout << "=====================================\n"
-        << "   Welcome to the Bus Stop Manager   \n"
-        << "=====================================\n";
+    std::cout << "=========================================================\n"
+              << "|                                                       |\n"
+              << "|            Welcome to the Bus Stop Manager            |\n"
+              << "|                                                       |\n"
+              << "=========================================================\n";
 
     manager.loadAllCSVs(csvFiles);
     chooseCSVFile();
@@ -47,11 +49,11 @@ void Application::chooseCSVFile() {
     size_t fileIndex;
     if (!(std::cin >> fileIndex) || fileIndex < 1 || fileIndex > csvFiles.size()) {
         std::cin.clear(); // Clear the error flag
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard the rest of the line
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cerr << "Invalid file number.\nExiting...\n";
         exit(1);
     }
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard the rest of the line
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     manager.setCurrentBusStops(csvFiles[fileIndex - 1]);
     // Display a message about the selected file
     std::cout << "Selected: " << csvFiles[fileIndex - 1] << "\n"

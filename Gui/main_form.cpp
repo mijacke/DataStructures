@@ -21,18 +21,15 @@ std::vector<std::unique_ptr<ds::tests::Test>> createTests()
 
 	//amt->add_test(std::make_unique<ds::tests::ImplicitSequenceTest>());
 
-	amt->add_test(std::make_unique<ds::tests::ExplicitSequenceTest>());
+	//amt->add_test(std::make_unique<ds::tests::ExplicitSequenceTest>());
 
-	// TODO 05
 	//amt->add_test(std::make_unique<ds::tests::ImplicitHierarchyTest>());
 
-	// TODO 07
 	//amt->add_test(std::make_unique<ds::tests::ExplicitHierarchyTest>());
 	//amt->add_test(std::make_unique<ds::tests::HierarchyTest>());
 
-	// TODO 08
-	//adt->add_test(std::make_unique<ds::tests::ListTest>());
-	//adt->add_test(std::make_unique<ds::tests::ArraysTest>());
+	adt->add_test(std::make_unique<ds::tests::ListTest>());
+	adt->add_test(std::make_unique<ds::tests::ArraysTest>());
 
 	// TODO 09
 	//adt->add_test(std::make_unique<ds::tests::StackTest>());
