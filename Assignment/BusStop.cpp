@@ -6,10 +6,6 @@ BusStop::BusStop(const std::string& stopId, const std::string& name, const std::
 	: stopId(stopId), name(name), stopSite(stopSite), latitude(latitude), longitude(longitude), 
 	sysCode(sysCode), system(system), municipality(municipality) {}
 
-BusStop::~BusStop()
-{
-}
-
 const std::string& BusStop::getStopId() const
 {
 	return stopId;
@@ -49,5 +45,3 @@ const std::string& BusStop::getMunicipality() const
 {
 	return municipality;
 }
-
-

@@ -15,7 +15,13 @@ namespace ds::adt
     {
     public:
         virtual void sort(amt::ImplicitSequence<T>& is, std::function<bool(const T&, const T&)> compare) = 0;
-        void sort(amt::ImplicitSequence<T>& is) { sort(is, [](const T& a, const T& b)->bool {return a < b; }); }
+        void sort(amt::ImplicitSequence<T>& is)
+        { 
+            sort(is, [](const T& a, const T& b)->bool 
+                {
+                    return a < b; 
+                });
+        }
     };
 
     //----------
@@ -124,23 +130,43 @@ namespace ds::adt
     //----------
 
     template<typename T>
-    void SelectSort<T>::sort(amt::ImplicitSequence<T>& is, std::function<bool(const T&, const T&)> compare)
+    void SelectSort<T>::sort(amt::ImplicitSequence<T>& is, std::function<bool(const T&, const T&)> compare) // selectSort v preklade znamena vyberanie
     {
-        // TODO 12
-        // po implementacii vymazte vyhodenie vynimky!
-        throw std::runtime_error("Not implemented yet");
+        for (size_t i = 0; i < is.size() - 1; i++)
+        {
+			size_t min = i;
+            for (size_t j = i + 1; j < is.size(); j++)
+            {
+                if (compare(is.access(j)->data_, is.access(min)->data_))
+                {
+					min = j;
+				}
+			}
+            // vymeò(is->sprístupni(i)->dáta, is->sprístupni(min)->dáta)
+            T temp = is.access(i)->data_;
+            is.access(i)->data_ = is.access(min)->data_;
+            is.access(min)->data_ = temp;
+		}
     }
 
     template<typename T>
-    void InsertSort<T>::sort(amt::ImplicitSequence<T>& is, std::function<bool(const T&, const T&)> compare)
+    void InsertSort<T>::sort(amt::ImplicitSequence<T>& is, std::function<bool(const T&, const T&)> compare) //insertSort v preklade znamena vkladanie
     {
-        // TODO 12
-        // po implementacii vymazte vyhodenie vynimky!
-        throw std::runtime_error("Not implemented yet");
+        for (size_t i = 1; i < is.size() - 1; i++)
+        {
+			T key = is.access(i)->data_;
+            size_t j = i;
+            while (j > 0 && compare(is.access(j - 1)->data_, key))
+            {
+				is.access(j)->data_ = is.access(j - 1)->data_;
+				--j;
+			}
+			is.access(j)->data_ = key;
+		}
     }
 
     template<typename T>
-    void BubbleSort<T>::sort(amt::ImplicitSequence<T>& is, std::function<bool(const T&, const T&)> compare)
+    void BubbleSort<T>::sort(amt::ImplicitSequence<T>& is, std::function<bool(const T&, const T&)> compare) //bubbleSort v preklade znamena bublinkove triedenie
     {
         // TODO 12
         // po implementacii vymazte vyhodenie vynimky!
